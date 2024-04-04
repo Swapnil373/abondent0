@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retro Chatroom</title>
+<style>
+    body {
+        font-family: 'Courier New', Courier, monospace;
+        background-color: #222;
+        background-image: url('damascus-pattern.jpg');
+        color: #eee;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: rgba(30, 30, 30, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    #messages {
+        height: 300px;
+        overflow-y: scroll;
+        border: 1px solid #555;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    #message-input {
+        width: calc(100% - 40px);
+        padding: 10px;
+        border: 1px solid #555;
+        border-radius: 5px;
+        margin-right: 10px;
+        background-color: #333;
+        color: #eee;
+    }
+    #file-input {
+        margin-bottom: 10px;
+    }
+    #send-btn {
+        padding: 10px 20px;
+        background-color: #c0c0c0;
+        color: #222;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div id="messages"></div>
+    <input type="text" id="name-input" placeholder="Your Name">
+    <br><br>
+    <input type="file" id="file-input">
+    <br><br>
+    <input type="text" id="message-input" placeholder="Type your message here">
+    <button id="send-btn">Send</button>
+</div>
+
+<script>
+    const messagesDiv = document.getElementById('messages');
+    const nameInput = document.getElementById('name-input');
+    const messageInput = document.getElementById('message-input');
+    const fileInput = document.getElementById('file-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    sendBtn.addEventListener('click', () => {
+        const name = nameInput.value.trim();
+        const message = messageInput.value.trim();
+        const file = fileInput.files[0];
+
+        if (name === '' || (message === '' && !file)) {
+            alert('Please enter your name and message, or select a file.');
+            return;
+        }
+
+        const messageElement = document.createElement('div');
+        messageElement.innerHTML = `<strong>${name}:</strong> ${message}`;
+        
+        if (file) {
+            const fileName = file.name;
+            const fileType = file.type;
+
+            if (fileType.startsWith('image')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    messageElement.innerHTML += `<br><img src="${e.target.result}" style="max-width: 300px; max-height: 300px;">`;
+                }
+                reader.readAsDataURL(file);
+            } else if (fileType.startsWith('video')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    messageElement.innerHTML += `<br><video controls style="max-width: 300px;"><source src="${e.target.result}" type="${fileType}">Your browser does not support the video tag.</video>`;
+                }
+                reader.readAsDataURL(file);
+            } else {
+                messageElement.innerHTML += `<br><em>Attachment: ${fileName}</em>`;
+            }
+        }
+        
+        messagesDiv.appendChild(messageElement);
+
+        // Clear input fields
+        nameInput.value = '';
+        messageInput.value = '';
+        fileInput.value = '';
+
+        // Auto scroll to bottom
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+</script>
+<script>
+    const socket = new WebSocket("ws://localhost:8765");  // Change the WebSocket URL as needed
+
+    // Event listener for incoming messages
+    socket.addEventListener("message", function(event) {
+        // Display received message in the chatroom
+        const messageDiv = document.createElement("div");
+        messageDiv.textContent = event.data;
+        document.getElementById("messages").appendChild(messageDiv);
+    });
+
+    // Function to send a message
+    function sendMessage(message) {
+        socket.send(message);
+    }
+
+    // Event listener for send button click
+    document.getElementById("send-btn").addEventListener("click", function() {
+        const name = document.getElementById("name-input").value.trim();
+        const message = document.getElementById("message-input").value.trim();
+        sendMessage(name + ": " + message);
+        // Clear input fields
+        document.getElementById("message-input").value = "";
+    });
+</script>
+</body>
+</html>
