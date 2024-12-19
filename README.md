@@ -1,2 +1,12 @@
 # Damascus Chatroom
 A TEST CREATING A CHATROOM FILE
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="refresh" content="0; url=CHATROOM/index.html" />
+</head>
+<body>
+  <p>If you are not redirected, <a href="CHATROOM/index.html">click here</a>.</p>
+</body>
+</html>
