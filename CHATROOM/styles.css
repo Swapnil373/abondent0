@@ -1,0 +1,54 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #222;
+    background-image: url('damascus-pattern.jpg');
+    color: #eee;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: rgba(30, 30, 30, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+#messages {
+    height: 300px;
+    overflow-y: scroll;
+    border: 1px solid #555;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+#message-input {
+    width: calc(100% - 40px);
+    padding: 10px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    margin-right: 10px;
+    background-color: #333;
+    color: #eee;
+}
+#file-input {
+    margin-bottom: 10px;
+}
+#send-btn {
+    padding: 10px 20px;
+    background-color: #c0c0c0;
+    color: #222;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+#send-btn:hover {
+    background-color: #a0a0a0;
+}
+.message {
+    margin-bottom: 10px;
+}
+.message img, .message video {
+    max-width: 100%;
+    border-radius: 5px;
+}
